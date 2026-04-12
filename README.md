@@ -5,6 +5,23 @@
 
 [![KestrelOps Scan](https://img.shields.io/badge/KestrelOps-Scan%20Passing-00c853?style=flat-square&logo=kubernetes)](https://warblecloud.com/kestrel)
 [![GitHub Checks](https://img.shields.io/badge/GitHub%20Checks-Enabled-0076D6?style=flat-square&logo=github)](https://warblecloud.com/kestrel/github)
+[![CI Scan](https://github.com/avinashetrx/kestrelops-demo/actions/workflows/kestrelops-scan.yml/badge.svg)](https://github.com/avinashetrx/kestrelops-demo/actions/workflows/kestrelops-scan.yml)
+[![Demo](https://img.shields.io/badge/▶%20Live%20Demo-Watch%20Now-6366f1?style=flat-square)](https://avinashetrx.github.io/kestrelops-demo/demo/)
+
+---
+
+## ▶ Terminal Demo
+
+> **[Watch the full interactive demo →](https://avinashetrx.github.io/kestrelops-demo/demo/)**
+
+[![KestrelOps Terminal Demo](https://img.shields.io/badge/asciinema-Watch%20Demo-d40000?style=flat-square&logo=asciinema)](https://avinashetrx.github.io/kestrelops-demo/demo/)
+
+The demo walks through:
+1. Scanning a **hardened** Deployment (score A, 94)
+2. Scanning a **root container** — 2 CRITICAL findings caught
+3. Scanning **deprecated API versions** via Pluto
+4. Rendering a **Helm chart** and scanning the output
+5. Running **scan-all** to get a full summary table
 
 ---
 
