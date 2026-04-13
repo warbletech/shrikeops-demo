@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scan-gke.sh — Export running workloads from a GKE cluster and scan via KestrelOps
+# scan-gke.sh — Export running workloads from a GKE cluster and scan via ShrikeOps
 #
 # Usage:
 #   ./scripts/scan-gke.sh --project my-project --cluster my-cluster --region us-central1
@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-KESTREL_API="${KESTREL_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
 PROJECT=""
 CLUSTER=""
 REGION=""
@@ -35,7 +35,7 @@ if [[ -z "$PROJECT" || -z "$CLUSTER" ]]; then
   exit 1
 fi
 
-echo "🦅 KestrelOps — GKE Live Cluster Scan"
+echo "🐦 ShrikeOps — GKE Live Cluster Scan"
 echo "   Project: $PROJECT"
 echo "   Cluster: $CLUSTER"
 echo "   Namespace: ${NAMESPACE/--all-namespaces/ALL}"
@@ -78,7 +78,7 @@ for RESOURCE in "${RESOURCES[@]}"; do
   f="$EXPORT_DIR/$RESOURCE.yaml"
   [[ ! -s "$f" ]] && continue
 
-  RESPONSE=$(curl -sf -X POST "$KESTREL_API" \
+  RESPONSE=$(curl -sf -X POST "$SHRIKE_API" \
     -H "Content-Type: application/json" \
     -d "{\"manifest\": $(cat "$f" | jq -Rs .), \"source\": \"gke:$CLUSTER/$RESOURCE\"}" \
     --max-time 30 2>/dev/null) || { echo "  Scan failed for $RESOURCE"; continue; }

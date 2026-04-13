@@ -1,4 +1,4 @@
-# ⚠️  INTENTIONALLY MISCONFIGURED — for KestrelOps demo
+# ⚠️  INTENTIONALLY MISCONFIGURED — for ShrikeOps demo
 # Expected scan result: score ~38, grade F
 # Findings: runAsRoot (CRITICAL), no resource limits (HIGH),
 #           no liveness probe (HIGH), latest image tag (HIGH),

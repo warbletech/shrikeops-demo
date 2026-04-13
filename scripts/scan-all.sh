@@ -9,12 +9,12 @@
 
 set -euo pipefail
 
-KESTREL_API="${KESTREL_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
 DIR="${1:-k8s}"
 FAIL_ON_CRITICAL=false
 [[ "${2:-}" == "--fail-on-critical" ]] && FAIL_ON_CRITICAL=true
 
-echo "🦅 KestrelOps — scanning all YAMLs in: $DIR"
+echo "🐦 ShrikeOps — scanning all YAMLs in: $DIR"
 echo ""
 printf "%-45s %6s %6s %8s %6s %6s\n" "File" "Score" "Grade" "Critical" "High" "Status"
 printf "%-45s %6s %6s %8s %6s %6s\n" "---------------------------------------------" "-----" "-----" "--------" "----" "------"
@@ -23,7 +23,7 @@ OVERALL_FAIL=false
 
 find "$DIR" -name "*.yaml" -o -name "*.yml" | sort | while read -r f; do
   MANIFEST=$(cat "$f")
-  RESPONSE=$(curl -sf -X POST "$KESTREL_API" \
+  RESPONSE=$(curl -sf -X POST "$SHRIKE_API" \
     -H "Content-Type: application/json" \
     -d "{\"manifest\": $(echo "$MANIFEST" | jq -Rs .), \"source\": \"$f\"}" \
     --max-time 30 2>/dev/null) || { printf "%-45s %6s\n" "$f" "ERROR"; continue; }

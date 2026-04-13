@@ -1,4 +1,4 @@
-# KestrelOps — Connect to EKS and Scan a Live Cluster
+# ShrikeOps — Connect to EKS and Scan a Live Cluster
 
 ## Prerequisites
 
@@ -82,8 +82,8 @@ eksctl utils associate-iam-oidc-provider \
 
 # Create service account with IAM role
 eksctl create iamserviceaccount \
-  --name kestrel-scanner \
-  --namespace kestrelops \
+  --name shrike-scanner \
+  --namespace ShrikeOps \
   --cluster MY_CLUSTER \
   --attach-policy-arn arn:aws:iam::aws:policy/AmazonEKSReadOnlyPolicy \
   --approve

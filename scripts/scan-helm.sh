@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scan-helm.sh — Render a Helm chart and scan the output via KestrelOps
+# scan-helm.sh — Render a Helm chart and scan the output via ShrikeOps
 # Usage: ./scripts/scan-helm.sh <chart-dir> [release-name] [namespace] [values-file]
 #
 # Examples:
@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-KESTREL_API="${KESTREL_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
 CHART_DIR="${1:-k8s/helm}"
 RELEASE="${2:-demo-release}"
 NAMESPACE="${3:-production}"
@@ -22,7 +22,7 @@ if ! command -v helm &>/dev/null; then
   exit 1
 fi
 
-echo "🦅 KestrelOps — Helm chart scan"
+echo "🐦 ShrikeOps — Helm chart scan"
 echo "   Chart:     $CHART_DIR"
 echo "   Release:   $RELEASE"
 echo "   Namespace: $NAMESPACE"
@@ -37,7 +37,7 @@ RENDERED=$($HELM_CMD)
 echo "Rendered ${#RENDERED} bytes of YAML — scanning..."
 echo ""
 
-RESPONSE=$(curl -sf -X POST "$KESTREL_API" \
+RESPONSE=$(curl -sf -X POST "$SHRIKE_API" \
   -H "Content-Type: application/json" \
   -d "{\"manifest\": $(echo "$RENDERED" | jq -Rs .), \"source\": \"helm:$CHART_DIR\"}" \
   --max-time 30)
@@ -63,7 +63,7 @@ for SEV in CRITICAL HIGH MEDIUM LOW; do
   if [[ "$COUNT" -gt 0 ]]; then
     echo "── $SEV ($COUNT) ──────────────────────────────"
     echo "$RESPONSE" | jq -r \
-      ".findings[] | select(.severity == \"$SEV\") | \"  [\(.tool)] \(.rule)\n  Resource: \(.resource // \"n/a\")\n  \(.message)\n  Fix: \(.remediation // \"See KestrelOps docs\")\n\""
+      ".findings[] | select(.severity == \"$SEV\") | \"  [\(.tool)] \(.rule)\n  Resource: \(.resource // \"n/a\")\n  \(.message)\n  Fix: \(.remediation // \"See ShrikeOps docs\")\n\""
   fi
 done
 

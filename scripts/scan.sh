@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# scan.sh — Scan a single YAML file via KestrelOps API
+# scan.sh — Scan a single YAML file via ShrikeOps API
 # Usage: ./scripts/scan.sh <path/to/manifest.yaml> [--json]
 #
 # Options:
 #   --json     Print full JSON response instead of formatted output
 #
 # Prerequisites: curl, jq
-# KestrelOps API: https://warblecloud.com/kestrel (free: 3 scans/day)
+# ShrikeOps API: https://warblecloud.com/kestrel (free: 3 scans/day)
 
 set -euo pipefail
 
-KESTREL_API="${KESTREL_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
 FILE="${1:-}"
 JSON_MODE=false
 [[ "${2:-}" == "--json" ]] && JSON_MODE=true
@@ -25,12 +25,12 @@ if [[ ! -f "$FILE" ]]; then
   exit 1
 fi
 
-echo "🦅 KestrelOps — scanning: $FILE"
-echo "   API: $KESTREL_API"
+echo "🐦 ShrikeOps — scanning: $FILE"
+echo "   API: $SHRIKE_API"
 echo ""
 
 MANIFEST=$(cat "$FILE")
-RESPONSE=$(curl -sf -X POST "$KESTREL_API" \
+RESPONSE=$(curl -sf -X POST "$SHRIKE_API" \
   -H "Content-Type: application/json" \
   -d "{\"manifest\": $(echo "$MANIFEST" | jq -Rs .), \"source\": \"$FILE\"}" \
   --max-time 30)
@@ -63,7 +63,7 @@ if [[ "$CRIT" -gt 0 || "$HIGH" -gt 0 ]]; then
   echo "$RESPONSE" | jq -r '
     .findings[]
     | select(.severity == "CRITICAL" or .severity == "HIGH")
-    | "  [\(.severity | if . == "CRITICAL" then "🔴" else "🟠" end) \(.severity)] \(.rule)\n    → \(.message)\n    → Fix: \(.remediation // "See KestrelOps docs")\n"
+    | "  [\(.severity | if . == "CRITICAL" then "🔴" else "🟠" end) \(.severity)] \(.rule)\n    → \(.message)\n    → Fix: \(.remediation // "See ShrikeOps docs")\n"
   '
 fi
 

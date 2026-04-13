@@ -1,4 +1,4 @@
-# ⚠️  INTENTIONALLY MISCONFIGURED — for KestrelOps demo
+# ⚠️  INTENTIONALLY MISCONFIGURED — for ShrikeOps demo
 # Expected scan result: score ~22, grade F
 # Findings: privileged container (CRITICAL), hostNetwork (CRITICAL),
 #           hostPID (CRITICAL), hostPath volume (CRITICAL),

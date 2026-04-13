@@ -1,4 +1,4 @@
-# KestrelOps — Connect to GKE and Scan a Live Cluster
+# ShrikeOps — Connect to GKE and Scan a Live Cluster
 
 ## Prerequisites
 
@@ -46,7 +46,7 @@ kubectl get deployments -n production -o yaml > production-deployments.yaml
 
 ---
 
-## Step 3 — Scan with KestrelOps
+## Step 3 — Scan with ShrikeOps
 
 ```bash
 # Scan a single exported file
@@ -95,7 +95,7 @@ Add this step to your `cloudbuild.yaml` to scan before deployment:
         -d "{\"manifest\": $(cat /tmp/workloads.yaml | jq -Rs .), \"source\": \"gke:$CLUSTER_NAME\"}")
       CRIT=$(echo "$RESPONSE" | jq -r '.summary.critical // 0')
       [ "$CRIT" -gt 0 ] && { echo "❌ Critical findings — blocking deploy"; exit 1; }
-      echo "✅ KestrelOps scan passed"
+      echo "✅ ShrikeOps Scan passed"
 ```
 
 ---
@@ -112,9 +112,9 @@ gcloud container clusters update MY_CLUSTER \
 
 # Bind a Kubernetes ServiceAccount to a GCP ServiceAccount
 gcloud iam service-accounts add-iam-policy-binding \
-  kestrel-scanner@MY_PROJECT.iam.gserviceaccount.com \
+  shrike-scanner@MY_PROJECT.iam.gserviceaccount.com \
   --role roles/iam.workloadIdentityUser \
-  --member "serviceAccount:MY_PROJECT.svc.id.goog[kestrelops/kestrel-sa]"
+  --member "serviceAccount:MY_PROJECT.svc.id.goog[ShrikeOps/shrike-sa]"
 ```
 
 ---

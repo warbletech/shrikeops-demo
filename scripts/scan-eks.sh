@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scan-eks.sh — Export running workloads from an EKS cluster and scan via KestrelOps
+# scan-eks.sh — Export running workloads from an EKS cluster and scan via ShrikeOps
 #
 # Usage:
 #   ./scripts/scan-eks.sh --cluster my-cluster --region us-east-1
@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-KESTREL_API="${KESTREL_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
 CLUSTER=""
 REGION="us-east-1"
 NAMESPACE="--all-namespaces"
@@ -28,7 +28,7 @@ if [[ -z "$CLUSTER" ]]; then
   exit 1
 fi
 
-echo "🦅 KestrelOps — EKS Live Cluster Scan"
+echo "🐦 ShrikeOps — EKS Live Cluster Scan"
 echo "   Cluster: $CLUSTER"
 echo "   Region:  $REGION"
 echo ""
@@ -56,7 +56,7 @@ for RESOURCE in "${RESOURCES[@]}"; do
   f="$EXPORT_DIR/$RESOURCE.yaml"
   [[ ! -s "$f" ]] && continue
 
-  RESPONSE=$(curl -sf -X POST "$KESTREL_API" \
+  RESPONSE=$(curl -sf -X POST "$SHRIKE_API" \
     -H "Content-Type: application/json" \
     -d "{\"manifest\": $(cat "$f" | jq -Rs .), \"source\": \"eks:$CLUSTER/$RESOURCE\"}" \
     --max-time 30 2>/dev/null) || continue

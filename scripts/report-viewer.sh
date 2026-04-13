@@ -12,12 +12,12 @@ FILE="${1:-}"
 
 if [[ -n "$FILE" && -f "$FILE" ]]; then
   # Inline the JSON as a script tag in a temp HTML page that auto-loads it
-  TMP=$(mktemp /tmp/kestrel-report-XXXX.html)
+  TMP=$(mktemp /tmp/shrike-report-XXXX.html)
   JSON=$(cat "$FILE" | python3 -c "import sys,json; print(json.dumps(json.load(sys.stdin)))" 2>/dev/null || cat "$FILE")
   sed "s|</script>|; window.addEventListener('DOMContentLoaded', () => render($JSON));</script>|" "$VIEWER" > "$TMP"
   echo "📊 Opening report: $FILE"
   open "$TMP" 2>/dev/null || xdg-open "$TMP" 2>/dev/null || start "$TMP" 2>/dev/null || echo "Open manually: $TMP"
 else
-  echo "📊 Opening KestrelOps Report Viewer"
+  echo "📊 Opening ShrikeOps Report Viewer"
   open "$VIEWER" 2>/dev/null || xdg-open "$VIEWER" 2>/dev/null || start "$VIEWER" 2>/dev/null || echo "Open manually: $VIEWER"
 fi

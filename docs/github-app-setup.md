@@ -1,6 +1,6 @@
-# KestrelOps GitHub App — PR Check Integration
+# ShrikeOps GitHub App — PR Check Integration
 
-Every PR that touches a `.yaml` or `.yml` file automatically triggers a KestrelOps scan. Results appear as a **GitHub Check** directly in the PR, with inline annotations per finding.
+Every PR that touches a `.yaml` or `.yml` file automatically triggers a ShrikeOps Scan. Results appear as a **GitHub Check** directly in the PR, with inline annotations per finding.
 
 ---
 
@@ -13,7 +13,7 @@ PR opened/updated
 GitHub webhook ──► https://warblecloud.com/api/kestrel-webhook
        │
        ▼
-KestrelOps fetches changed YAML files from PR diff
+ShrikeOps fetches changed YAML files from PR diff
        │
        ▼
 Scans each file: Polaris + kube-score + Pluto + OPA
@@ -29,17 +29,17 @@ Posts GitHub Check with:
 
 ## Setup Steps
 
-### 1. Install the KestrelOps GitHub App
+### 1. Install the ShrikeOps GitHub App
 
-Go to: **[github.com/apps/kestrelops](https://github.com/apps/kestrelops)**  
-Click **Install** → select the repositories you want KestrelOps to guard.
+Go to: **[github.com/apps/ShrikeOps](https://github.com/apps/ShrikeOps)**  
+Click **Install** → select the repositories you want ShrikeOps to guard.
 
 ### 2. Configure Branch Protection
 
 1. Go to repo → **Settings → Branches → Branch protection rules**
 2. For `main` (or your default branch):
    - ✅ **Require status checks to pass before merging**
-   - Add status check: `KestrelOps Security Scan`
+   - Add status check: `ShrikeOps Security Scan`
    - ✅ **Require branches to be up to date**
 
 ### 3. Verify a PR Check
@@ -47,9 +47,9 @@ Click **Install** → select the repositories you want KestrelOps to guard.
 Open any PR that modifies a `.yaml` file. Within seconds you'll see:
 
 ```
-✅ KestrelOps Security Scan — score: 91 (A)  [Details]
+✅ ShrikeOps Security Scan — score: 91 (A)  [Details]
    or
-❌ KestrelOps Security Scan — 2 critical findings  [Details]
+❌ ShrikeOps Security Scan — 2 critical findings  [Details]
 ```
 
 Clicking **Details** shows the full scored report with remediation guidance.
@@ -62,7 +62,7 @@ If you prefer Actions over the GitHub App, use the included workflow:
 
 ```bash
 # Already included at:
-.github/workflows/kestrelops-scan.yml
+.github/workflows/ShrikeOps-scan.yml
 ```
 
 This workflow:
