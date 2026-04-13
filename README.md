@@ -1,20 +1,20 @@
-# 🦅 KestrelOps Demo Repository
+# ShrikeOps 🐦 Demo Repository
 
-> **Production-grade Kubernetes manifest scanning via [KestrelOps](https://warblecloud.com/kestrel)**  
-> Scan Helm charts, raw YAML, and live GKE/EKS/AKS clusters. Get scored security reports as a SaaS API.
+> **Production-grade Kubernetes manifest scanning via [ShrikeOps](https://warblecloud.com/kestrel)**  
+> The scanner that catches bugs and impales them on thorns — Helm charts, raw YAML, live GKE/EKS/AKS clusters.
 
-[![KestrelOps Scan](https://img.shields.io/badge/KestrelOps-Scan%20Passing-00c853?style=flat-square&logo=kubernetes)](https://warblecloud.com/kestrel)
+[![ShrikeOps Scan](https://img.shields.io/badge/ShrikeOps-Scan%20Passing-00c853?style=flat-square&logo=kubernetes)](https://warblecloud.com/kestrel)
 [![GitHub Checks](https://img.shields.io/badge/GitHub%20Checks-Enabled-0076D6?style=flat-square&logo=github)](https://warblecloud.com/kestrel/github)
-[![CI Scan](https://github.com/avinashetrx/kestrelops-demo/actions/workflows/kestrelops-scan.yml/badge.svg)](https://github.com/avinashetrx/kestrelops-demo/actions/workflows/kestrelops-scan.yml)
-[![Demo](https://img.shields.io/badge/▶%20Live%20Demo-Watch%20Now-6366f1?style=flat-square)](https://avinashetrx.github.io/kestrelops-demo/demo/)
+[![CI Scan](https://github.com/avinashetrx/shrikeops-demo/actions/workflows/shrikeops-scan.yml/badge.svg)](https://github.com/avinashetrx/shrikeops-demo/actions/workflows/shrikeops-scan.yml)
+[![Demo](https://img.shields.io/badge/▶%20Live%20Demo-Watch%20Now-6366f1?style=flat-square)](https://avinashetrx.github.io/shrikeops-demo/demo/)
 
 ---
 
 ## ▶ Terminal Demo
 
-> **[Watch the full interactive demo →](https://avinashetrx.github.io/kestrelops-demo/demo/)**
+> **[Watch the full interactive demo →](https://avinashetrx.github.io/shrikeops-demo/demo/)**
 
-[![KestrelOps Terminal Demo](https://img.shields.io/badge/asciinema-Watch%20Demo-d40000?style=flat-square&logo=asciinema)](https://avinashetrx.github.io/kestrelops-demo/demo/)
+[![ShrikeOps Terminal Demo](https://img.shields.io/badge/asciinema-Watch%20Demo-d40000?style=flat-square&logo=asciinema)](https://avinashetrx.github.io/shrikeops-demo/demo/)
 
 The demo walks through:
 1. Scanning a **hardened** Deployment (score A, 94)
@@ -30,9 +30,9 @@ The demo walks through:
 | Capability | Description |
 |---|---|
 | **Raw YAML scanning** | Kubernetes Deployment, Service, RBAC, NetworkPolicy manifests |
-| **Helm chart scanning** | `helm template` output piped to KestrelOps |
+| **Helm chart scanning** | `helm template` output piped to ShrikeOps |
 | **Bad config detection** | Intentionally misconfigured manifests to show findings |
-| **GitHub PR Checks** | Automatic scan on every PR via KestrelOps webhook |
+| **GitHub PR Checks** | Automatic scan on every PR via ShrikeOps webhook |
 | **CI pipeline** | GitHub Actions workflow scanning all YAMLs on push |
 | **GKE live cluster** | Export running workloads from GKE and scan them |
 | **EKS / AKS** | Same pattern for AWS and Azure clusters |
@@ -43,7 +43,7 @@ The demo walks through:
 ## Quick Start — Scan a Manifest
 
 ```bash
-# Scan any YAML file against the KestrelOps API (free tier: 3 scans/day)
+# Scan any YAML file against the ShrikeOps API (free tier: 3 scans/day)
 curl -s -X POST https://warblecloud.com/api/kestrel-scan \
   -H "Content-Type: application/json" \
   -d "{\"manifest\": \"$(cat k8s/good/deployment.yaml | base64 -w0 | base64 -d)\", \"source\": \"deployment.yaml\"}" \
@@ -57,7 +57,7 @@ curl -s -X POST https://warblecloud.com/api/kestrel-scan \
 
 ```json
 {
-  "scan_id": "kop-1744123456789",
+  "scan_id": "sop-1744123456789",
   "score": 42,
   "grade": "D",
   "source": "root-container.yaml",
@@ -82,7 +82,7 @@ curl -s -X POST https://warblecloud.com/api/kestrel-scan \
 ## Repository Layout
 
 ```
-kestrelops-demo/
+shrikeops-demo/
 ├── k8s/
 │   ├── good/                   # Well-configured manifests (score A)
 │   │   ├── deployment.yaml
@@ -101,9 +101,9 @@ kestrelops-demo/
 │           ├── deployment.yaml
 │           └── service.yaml
 ├── scripts/
-│   ├── scan.sh                 # Scan any file via KestrelOps API
+│   ├── scan.sh                 # Scan any file via ShrikeOps API
 │   ├── scan-all.sh             # Scan every YAML in k8s/ and report
-│   ├── scan-helm.sh            # helm template | KestrelOps
+│   ├── scan-helm.sh            # helm template | ShrikeOps
 │   ├── scan-gke.sh             # Export GKE workloads and scan
 │   ├── scan-eks.sh             # Export EKS workloads and scan
 │   └── report-viewer.sh        # Open HTML report in browser
@@ -111,11 +111,11 @@ kestrelops-demo/
 │   └── viewer.html             # Standalone offline report viewer
 ├── .github/
 │   └── workflows/
-│       └── kestrelops-scan.yml # CI: scan all YAMLs on push/PR
+│       └── shrikeops-scan.yml  # CI: scan all YAMLs on push/PR
 └── docs/
     ├── gke-setup.md            # Connect to GKE and scan live cluster
     ├── eks-setup.md            # Connect to EKS and scan live cluster
-    └── github-app-setup.md     # Set up KestrelOps GitHub App
+    └── github-app-setup.md     # Set up ShrikeOps GitHub App
 ```
 
 ---
@@ -138,7 +138,7 @@ kestrelops-demo/
 - [Connect to GKE →](docs/gke-setup.md)
 - [Connect to EKS →](docs/eks-setup.md)
 - [GitHub App Setup →](docs/github-app-setup.md)
-- [KestrelOps Scanner →](https://warblecloud.com/kestrel)
+- [ShrikeOps Scanner →](https://warblecloud.com/kestrel)
 - [GitHub PR Integration →](https://warblecloud.com/kestrel/github)
 
 ---
