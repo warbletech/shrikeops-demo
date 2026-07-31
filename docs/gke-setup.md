@@ -66,7 +66,7 @@ kubectl get deployments -n production -o yaml > production-deployments.yaml
 
 ```bash
 # Scan and save JSON report
-curl -s -X POST https://warblecloud.com/api/kestrel-scan \
+curl -s -X POST https://warblecloud.com/api/shrikeops-scan \
   -H "Content-Type: application/json" \
   -d "{\"manifest\": $(cat deployments.yaml | jq -Rs .), \"source\": \"gke:MY_CLUSTER/deployments\"}" \
   > report.json
@@ -90,7 +90,7 @@ Add this step to your `cloudbuild.yaml` to scan before deployment:
     - '-c'
     - |
       kubectl get deployments --all-namespaces -o yaml > /tmp/workloads.yaml
-      RESPONSE=$(curl -sf -X POST https://warblecloud.com/api/kestrel-scan \
+      RESPONSE=$(curl -sf -X POST https://warblecloud.com/api/shrikeops-scan \
         -H "Content-Type: application/json" \
         -d "{\"manifest\": $(cat /tmp/workloads.yaml | jq -Rs .), \"source\": \"gke:$CLUSTER_NAME\"}")
       CRIT=$(echo "$RESPONSE" | jq -r '.summary.critical // 0')

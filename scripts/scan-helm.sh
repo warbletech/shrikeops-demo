@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"  # optional SaaS; prefer local shrikeops binary
 CHART_DIR="${1:-k8s/helm}"
 RELEASE="${2:-demo-release}"
 NAMESPACE="${3:-production}"

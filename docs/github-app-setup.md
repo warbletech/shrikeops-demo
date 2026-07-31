@@ -10,7 +10,7 @@ Every PR that touches a `.yaml` or `.yml` file automatically triggers a ShrikeOp
 PR opened/updated
        │
        ▼
-GitHub webhook ──► https://warblecloud.com/api/kestrel-webhook
+GitHub webhook ──► https://warblecloud.com/api/shrikeops-webhook
        │
        ▼
 ShrikeOps fetches changed YAML files from PR diff
@@ -90,7 +90,7 @@ This workflow:
 ## Webhook Endpoint
 
 ```
-POST https://warblecloud.com/api/kestrel-webhook
+POST https://warblecloud.com/api/shrikeops-webhook
 Content-Type: application/json
 X-Hub-Signature-256: sha256=<hmac-signature>
 ```
@@ -101,6 +101,6 @@ Only `pull_request` events are processed. All other event types return `200 OK` 
 
 ## Support
 
-- **Scanner**: [warblecloud.com/kestrel](https://warblecloud.com/kestrel)
-- **GitHub setup**: [warblecloud.com/kestrel/github](https://warblecloud.com/kestrel/github)
+- **Scanner**: [warblecloud.com/kestrel](https://warbleoss.org)
+- **GitHub setup**: [warblecloud.com/kestrel/github](https://github.com/warble-tech/shrikeops)
 - **Email**: [contact@warblecloud.com](mailto:contact@warblecloud.com)

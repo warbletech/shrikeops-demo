@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"  # optional SaaS; prefer local shrikeops binary
 PROJECT=""
 CLUSTER=""
 REGION=""

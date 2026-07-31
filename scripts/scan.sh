@@ -6,11 +6,11 @@
 #   --json     Print full JSON response instead of formatted output
 #
 # Prerequisites: curl, jq
-# ShrikeOps API: https://warblecloud.com/kestrel (free: 3 scans/day)
+# ShrikeOps API: https://github.com/warble-tech/shrikeops (free: 3 scans/day)
 
 set -euo pipefail
 
-SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"  # optional SaaS; prefer local shrikeops binary
 FILE="${1:-}"
 JSON_MODE=false
 [[ "${2:-}" == "--json" ]] && JSON_MODE=true

@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"
+SHRIKE_API="${SHRIKE_API:-https://warblecloud.com/api/kestrel-scan}"  # optional SaaS; prefer local shrikeops binary
 DIR="${1:-k8s}"
 FAIL_ON_CRITICAL=false
 [[ "${2:-}" == "--fail-on-critical" ]] && FAIL_ON_CRITICAL=true

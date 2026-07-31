@@ -60,7 +60,7 @@ kubectl get deployments --all-namespaces -o yaml > eks-deployments.yaml
     aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER }} --region us-east-1
     kubectl get deployments --all-namespaces -o yaml > /tmp/eks.yaml
     
-    RESPONSE=$(curl -sf -X POST https://warblecloud.com/api/kestrel-scan \
+    RESPONSE=$(curl -sf -X POST https://warblecloud.com/api/shrikeops-scan \
       -H "Content-Type: application/json" \
       -d "{\"manifest\": $(cat /tmp/eks.yaml | jq -Rs .), \"source\": \"eks:${{ vars.EKS_CLUSTER }}\"}")
     

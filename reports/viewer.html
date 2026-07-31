@@ -107,7 +107,7 @@
   </svg>
   <div>
     <h1>🦅 ShrikeOps Report Viewer</h1>
-    <span>Drag &amp; drop a scan JSON report · or paste JSON below · or scan live at <a href="https://warblecloud.com/kestrel" target="_blank" style="color:#3b82f6">warblecloud.com/kestrel</a></span>
+    <span>Drag &amp; drop a scan JSON report · or paste JSON below · or scan live at <a href="https://warbleoss.org" target="_blank" style="color:#3b82f6">warblecloud.com/kestrel</a></span>
   </div>
 </header>
 
@@ -147,7 +147,7 @@
         <h2 id="source-label">Scan Report</h2>
         <p id="scan-id-label" style="font-size:0.78rem;color:#64748b"></p>
         <div class="pills" id="pills"></div>
-        <a class="cta" href="https://warblecloud.com/kestrel" target="_blank">
+        <a class="cta" href="https://warbleoss.org" target="_blank">
           ↗ Scan Another Manifest
         </a>
       </div>
@@ -266,7 +266,7 @@ function renderFindings() {
       <div class="finding-header">
         <span class="sev-badge sev-${f.severity}">${f.severity}</span>
         <span class="finding-rule">${f.rule || '—'}</span>
-        <span class="finding-tool">${f.tool || 'kestrel'}</span>
+        <span class="finding-tool">${f.tool || 'shrikeops'}</span>
       </div>
       <div class="finding-msg">${f.message || ''}</div>
       ${f.remediation ? `<div class="finding-fix">${f.remediation}</div>` : ''}
