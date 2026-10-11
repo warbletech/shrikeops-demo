@@ -102,5 +102,5 @@ Only `pull_request` events are processed. All other event types return `200 OK` 
 ## Support
 
 - **Scanner**: [warblecloud.com/kestrel](https://warbleoss.org)
-- **GitHub setup**: [warblecloud.com/kestrel/github](https://github.com/warble-tech/shrikeops)
+- **GitHub setup**: [warblecloud.com/kestrel/github](https://github.com/warbletech/shrikeops)
 - **Email**: [contact@warblecloud.com](mailto:contact@warblecloud.com)
