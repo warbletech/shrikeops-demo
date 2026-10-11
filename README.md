@@ -1,8 +1,8 @@
 # ShrikeOps Demo
 
-> Intentional good/bad Kubernetes manifests for **[ShrikeOps](https://github.com/warble-tech/shrikeops)** — the scanner that catches bugs and impales them on thorns.
+> Intentional good/bad Kubernetes manifests for **[ShrikeOps](https://github.com/warbletech/shrikeops)** — the scanner that catches bugs and impales them on thorns.
 
-Part of the [Warble Army](https://github.com/warble-tech/warble-army) flock · **[warbleoss.org](https://warbleoss.org)**
+Part of the [Warble Army](https://github.com/warbletech/warble-army) flock · **[warbleoss.org](https://warbleoss.org)**
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
@@ -26,7 +26,7 @@ Great for **`good-first-issue`** contributions: add fixtures, improve docs, fix 
 
 ```bash
 # From warble-army (or install shrikeops binary)
-git clone --recurse-submodules https://github.com/warble-tech/warble-army.git
+git clone --recurse-submodules https://github.com/warbletech/warble-army.git
 cd warble-army
 
 # Scan a bad fixture (example — use your local shrikeops build)
@@ -43,7 +43,7 @@ cd shrikeops-demo
 Pair findings with live cluster tools via Starling Lite:
 
 ```text
-https://starling-ex.frakma.io/lite/mcp
+https://mcp.warbleoss.org
 ```
 
 ---
@@ -66,9 +66,9 @@ shrikeops-demo/
 
 ## Docs
 
-- [ShrikeOps](https://github.com/warble-tech/shrikeops)
-- [Heron Ops](https://github.com/warble-tech/heron-ops)
-- [Starling EX Community](https://github.com/warble-tech/warble-army/blob/main/docs/STARLING_EX_CE.md)
+- [ShrikeOps](https://github.com/warbletech/shrikeops)
+- [Heron Ops](https://github.com/warbletech/heron-ops)
+- [Starling EX Community](https://github.com/warbletech/warble-army/blob/main/docs/STARLING_EX_CE.md)
 - [warbleoss.org](https://warbleoss.org)
 
 Optional commercial SaaS (not required for demos): [warblecloud.com](https://warblecloud.com)
