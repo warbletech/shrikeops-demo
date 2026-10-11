@@ -6,7 +6,7 @@
 #   --json     Print full JSON response instead of formatted output
 #
 # Prerequisites: curl, jq
-# ShrikeOps API: https://github.com/warble-tech/shrikeops (free: 3 scans/day)
+# ShrikeOps API: https://github.com/warbletech/shrikeops (free: 3 scans/day)
 
 set -euo pipefail
 
