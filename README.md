@@ -15,6 +15,7 @@ Part of the [Warble Army](https://github.com/warbletech/warble-army) flock · **
 | **Raw YAML scanning** | Deployment, Service, RBAC, NetworkPolicy fixtures |
 | **Helm chart scanning** | `helm template` output piped to ShrikeOps |
 | **Bad config detection** | Intentionally misconfigured manifests (root, privileged, deprecated APIs) |
+| **Runtime failures for evaluators** | [`k8s/broken/`](k8s/broken/): crash loop, OOM kill and bad image tag to diagnose with Heron Ops / Starling Lite |
 | **CI pipeline** | GitHub Actions workflow to scan YAMLs on push/PR |
 | **HTML report viewer** | Offline scan report rendered in browser |
 
@@ -54,7 +55,8 @@ https://mcp.warbleoss.org
 shrikeops-demo/
 ├── k8s/
 │   ├── good/                   # Well-configured manifests
-│   ├── bad/                    # Intentionally bad configs
+│   ├── bad/                    # Intentionally bad configs (static scan findings)
+│   ├── broken/                 # Valid YAML that fails at runtime (crash loop, OOM, bad image tag)
 │   └── helm/                   # Sample chart
 ├── scripts/                    # scan helpers
 ├── reports/                    # HTML report viewer
