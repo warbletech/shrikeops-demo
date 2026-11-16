@@ -82,7 +82,8 @@ jobs:
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: .heron-ops/go.mod
+          # heron-ops' go.work needs a newer Go than go.mod's minimum
+          go-version: stable
           cache-dependency-path: .heron-ops/go.sum
 
       - name: Build heron-ops
