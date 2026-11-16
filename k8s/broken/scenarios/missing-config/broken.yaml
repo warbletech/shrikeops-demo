@@ -1,0 +1,108 @@
+# ⚠️  INTENTIONALLY BROKEN AT RUNTIME. Apply only to a disposable cluster (kind/minikube).
+# Sample: missing-config. See README.md in this folder.
+# Symptom: config-api   -> CreateContainerConfigError (env refers to a ConfigMap that does not exist)
+#          secret-worker -> stuck in ContainerCreating (volume refers to a Secret that does not exist)
+# Fix:     fixed.yaml creates the missing ConfigMap and Secret; kubelet then starts both pods.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: broken-config
+  labels:
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "missing-config"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-api
+  namespace: broken-config
+  labels:
+    app: config-api
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "missing-config"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-api
+  template:
+    metadata:
+      labels:
+        app: config-api
+        app.kubernetes.io/part-of: shrikeops-demo
+        shrikeops-demo/broken-sample: "missing-config"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: api
+          image: busybox:1.36
+          command: ["sh", "-c", "echo \"connecting to $DB_HOST\"; sleep 3600"]
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_HOST
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secret-worker
+  namespace: broken-config
+  labels:
+    app: secret-worker
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "missing-config"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secret-worker
+  template:
+    metadata:
+      labels:
+        app: secret-worker
+        app.kubernetes.io/part-of: shrikeops-demo
+        shrikeops-demo/broken-sample: "missing-config"
+    spec:
+      automountServiceAccountToken: false
+      volumes:
+        - name: creds
+          secret:
+            secretName: db-credentials
+      containers:
+        - name: worker
+          image: busybox:1.36
+          command: ["sh", "-c", "ls /etc/creds; sleep 3600"]
+          volumeMounts:
+            - name: creds
+              mountPath: /etc/creds
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

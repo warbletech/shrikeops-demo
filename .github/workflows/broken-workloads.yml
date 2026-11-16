@@ -1,0 +1,113 @@
+name: Broken workloads
+
+# Validates the evaluator samples in k8s/broken/ and proves on a real kind cluster that each one
+# reaches its documented broken state, that the heron-ops cluster tools show the evidence, and that
+# the fixed/ versions become healthy. Runs on GitHub-hosted runners; needs no secrets.
+
+on:
+  pull_request:
+    paths:
+      - "k8s/broken/**"
+      - "scripts/broken-workloads.sh"
+      - "scripts/test-broken-workloads.sh"
+      - "scripts/mcp-call.py"
+      - ".github/workflows/broken-workloads.yml"
+  push:
+    branches: [master]
+    paths:
+      - "k8s/broken/**"
+      - "scripts/broken-workloads.sh"
+      - "scripts/test-broken-workloads.sh"
+      - "scripts/mcp-call.py"
+      - ".github/workflows/broken-workloads.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: broken-workloads-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  KUBECONFORM_VERSION: v0.8.0
+  KUBECONFORM_SHA256: 9bc2bffbf71f261128533edaf912153948b7ff238f9a531ae6d34466ec287883
+  METRICS_SERVER_VERSION: v0.9.1
+  # heron-ops commit pinned by warble-army's heron-ops submodule (what evaluators build).
+  HERON_OPS_REF: 7749c00b48bc43e727aac509d1fad56609ea9da0
+
+jobs:
+  lint:
+    name: Validate manifests and scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install kubeconform
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/kc.tgz \
+            "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
+          echo "${KUBECONFORM_SHA256}  /tmp/kc.tgz" | sha256sum -c -
+          tar -xzf /tmp/kc.tgz -C /usr/local/bin kubeconform
+
+      - name: kubeconform -strict
+        run: kubeconform -strict -summary k8s/broken
+
+      - name: shellcheck
+        run: shellcheck scripts/broken-workloads.sh scripts/test-broken-workloads.sh
+
+      - name: Python syntax
+        run: python3 -m py_compile scripts/mcp-call.py
+
+  kind:
+    name: Samples break, then fix (kind)
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: warbletech/heron-ops
+          ref: ${{ env.HERON_OPS_REF }}
+          path: .heron-ops
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: .heron-ops/go.mod
+          cache-dependency-path: .heron-ops/go.sum
+
+      - name: Build heron-ops
+        working-directory: .heron-ops
+        run: go build -o "$RUNNER_TEMP/heron-ops" .
+
+      - name: Create kind cluster
+        uses: helm/kind-action@ea822c7bf1874f08e5a491df991c228edffc3376 # v1.15.2
+        with:
+          cluster_name: warble-eval
+
+      - name: Install metrics-server (for the HPA sample)
+        run: |
+          set -euo pipefail
+          kubectl apply -f "https://github.com/kubernetes-sigs/metrics-server/releases/download/${METRICS_SERVER_VERSION}/components.yaml"
+          # kind kubelets use self-signed serving certs
+          kubectl -n kube-system patch deployment metrics-server --type=json \
+            -p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+          kubectl -n kube-system rollout status deployment/metrics-server --timeout=180s
+
+      - name: Break, diagnose, fix
+        env:
+          MCP_SERVER: ${{ runner.temp }}/heron-ops --mode=readonly --kubeconfig /home/runner/.kube/config
+        run: scripts/test-broken-workloads.sh
+
+      - name: Cleanup
+        if: always()
+        run: scripts/broken-workloads.sh cleanup || true

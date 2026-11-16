@@ -1,8 +1,8 @@
 # ⚠️  INTENTIONALLY BROKEN AT RUNTIME — for the evaluator quickstart
 # Symptom: container is OOMKilled (exit code 137) and restarts, then CrashLoopBackOff.
 # Root cause: the process allocates ~256 MiB but the memory limit is 64 MiB.
-# Expected diagnosis: get_pod shows lastState.terminated.reason=OOMKilled;
-# a fix proposal raises resources.limits.memory (or reduces the workload's usage).
+# Expected diagnosis: restarts keep rising; the pod's lastState.terminated.reason is OOMKilled
+# (kubectl describe pod). A fix raises resources.limits.memory (see fixed/oom.yaml) or reduces usage.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
