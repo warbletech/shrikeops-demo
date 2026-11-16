@@ -30,8 +30,8 @@ wait_until() {
 }
 
 pod_of() { kubectl -n "$1" get pods -l "app=$2" -o jsonpath='{.items[0].metadata.name}'; }
-# jsonpath on the first pod of app=$2 in namespace $1
-pj() { kubectl -n "$1" get pods -l "app=$2" -o jsonpath="{.items[0]$3}"; }
+# jsonpath on the first pod of app=$2 in namespace $1; $3 is a path like "{.status.phase}"
+pj() { local p="${3#\{}"; p="${p%\}}"; kubectl -n "$1" get pods -l "app=$2" -o jsonpath="{.items[0]$p}"; }
 # all event messages for an object name prefix in a namespace
 ev() { kubectl -n "$1" get events -o jsonpath='{range .items[*]}{.involvedObject.name}{"\t"}{.reason}{"\t"}{.message}{"\n"}{end}' | grep "^$2" || true; }
 export -f pj ev pod_of
@@ -112,10 +112,12 @@ fi
 
 echo "== apply fixed versions"
 "$BW" fix all
+# Not "rollout status": a Deployment that sat broken past its progress deadline makes it fail at once.
+# Pods waiting on a missing Secret volume retry with kubelet backoff (up to ~2 min), hence the timeout.
 for ns in demo broken-config broken-scheduling broken-readiness broken-hpa; do
   for d in $(kubectl -n "$ns" get deploy -o name); do
-    if kubectl -n "$ns" rollout status "$d" --timeout=240s >/dev/null; then pass "$ns $d healthy"
-    else fail "$ns $d not healthy after fix"; kubectl -n "$ns" get pods -o wide; fi
+    wait_until 300 "$ns $d healthy (1 updated, ready replica)" \
+      "[[ \"\$(kubectl -n $ns get $d -o jsonpath='{.status.readyReplicas}/{.status.updatedReplicas}/{.status.replicas}')\" == 1/1/1 ]]"
   done
 done
 wait_until 300 "fixed HPA reports CPU utilisation" \
