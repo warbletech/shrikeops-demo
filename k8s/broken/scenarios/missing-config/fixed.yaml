@@ -1,0 +1,25 @@
+# Fix for the missing-config sample: create the objects the Deployments refer to.
+# The Deployments themselves are unchanged; kubelet retries and both pods start.
+# The Secret value is a placeholder for the demo, not a credential.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: broken-config
+  labels:
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "missing-config"
+data:
+  DB_HOST: db.broken-config.svc.cluster.local
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-credentials
+  namespace: broken-config
+  labels:
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "missing-config"
+type: Opaque
+stringData:
+  username: demo

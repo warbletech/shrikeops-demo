@@ -15,7 +15,7 @@ Part of the [Warble Army](https://github.com/warbletech/warble-army) flock · **
 | **Raw YAML scanning** | Deployment, Service, RBAC, NetworkPolicy fixtures |
 | **Helm chart scanning** | `helm template` output piped to ShrikeOps |
 | **Bad config detection** | Intentionally misconfigured manifests (root, privileged, deprecated APIs) |
-| **Runtime failures for evaluators** | [`k8s/broken/`](k8s/broken/): crash loop, OOM kill and bad image tag to diagnose with Heron Ops / Starling Lite |
+| **Runtime failures for evaluators** | [`k8s/broken/`](k8s/broken/): crash loop, OOM kill, bad image tag, missing ConfigMap/Secret, unschedulable pods, failing readiness probe and an HPA with no CPU request, each with a fixed version, to diagnose with Heron Ops / Starling Lite |
 | **CI pipeline** | GitHub Actions workflow to scan YAMLs on push/PR |
 | **HTML report viewer** | Offline scan report rendered in browser |
 
@@ -56,9 +56,9 @@ shrikeops-demo/
 ├── k8s/
 │   ├── good/                   # Well-configured manifests
 │   ├── bad/                    # Intentionally bad configs (static scan findings)
-│   ├── broken/                 # Valid YAML that fails at runtime (crash loop, OOM, bad image tag)
+│   ├── broken/                 # Valid YAML that fails at runtime, plus fixed/ and scenarios/
 │   └── helm/                   # Sample chart
-├── scripts/                    # scan helpers
+├── scripts/                    # scan helpers, broken-workloads.sh (apply/fix/cleanup samples)
 ├── reports/                    # HTML report viewer
 ├── demo/                       # asciinema / static demo (if present)
 └── docs/                       # GKE/EKS/GitHub App setup notes

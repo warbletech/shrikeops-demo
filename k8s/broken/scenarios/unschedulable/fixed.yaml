@@ -1,0 +1,90 @@
+# Fixed version of the unschedulable sample: a realistic CPU request and no nodeSelector.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: broken-scheduling
+  labels:
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "unschedulable"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: too-big
+  namespace: broken-scheduling
+  labels:
+    app: too-big
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "unschedulable"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: too-big
+  template:
+    metadata:
+      labels:
+        app: too-big
+        app.kubernetes.io/part-of: shrikeops-demo
+        shrikeops-demo/broken-sample: "unschedulable"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: app
+          image: busybox:1.36
+          command: ["sh", "-c", "sleep 3600"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 10m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrong-node
+  namespace: broken-scheduling
+  labels:
+    app: wrong-node
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "unschedulable"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wrong-node
+  template:
+    metadata:
+      labels:
+        app: wrong-node
+        app.kubernetes.io/part-of: shrikeops-demo
+        shrikeops-demo/broken-sample: "unschedulable"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: app
+          image: busybox:1.36
+          command: ["sh", "-c", "sleep 3600"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

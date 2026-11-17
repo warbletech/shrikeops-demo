@@ -1,0 +1,40 @@
+# Fixed version of crashloop.yaml (broken-api).
+# The real fix is outside the manifest: make the database reachable, or have the app retry with backoff
+# instead of exiting. This manifest stands in for "the dependency is back": the container stays up.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-api
+  namespace: demo
+  labels:
+    app: broken-api
+    app.kubernetes.io/part-of: shrikeops-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broken-api
+  template:
+    metadata:
+      labels:
+        app: broken-api
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: api
+          image: busybox:1.36
+          command: ["sh", "-c", "echo 'db connection ok'; sleep 3600"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

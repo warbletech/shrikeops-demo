@@ -1,0 +1,41 @@
+# Fixed version of oom.yaml (memory-hog).
+# The worker holds ~256 MiB plus interpreter overhead, so the limit goes from 64Mi to 384Mi.
+# The other valid fix is to make the worker use less memory. Note: propose_remediation's generic
+# "resources" rule suggests a 256Mi limit, which is NOT enough for this workload.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-hog
+  namespace: demo
+  labels:
+    app: memory-hog
+    app.kubernetes.io/part-of: shrikeops-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-hog
+  template:
+    metadata:
+      labels:
+        app: memory-hog
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: worker
+          image: python:3.12-alpine
+          command: ["python", "-c", "import time; b = b'x' * (256 * 1024 * 1024); time.sleep(3600)"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 384Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

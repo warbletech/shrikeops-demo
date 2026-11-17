@@ -1,0 +1,65 @@
+# ⚠️  INTENTIONALLY BROKEN AT RUNTIME. Apply only to a disposable cluster (kind/minikube).
+# Sample: readiness-probe. See README.md in this folder.
+# Symptom: pod is Running with 0 restarts but never Ready (0/1), so it would never receive traffic.
+# Root cause: the app writes /tmp/healthy, the readiness probe checks /tmp/ready.
+# Fix: fixed.yaml points the probe at /tmp/healthy.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: broken-readiness
+  labels:
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "readiness-probe"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: broken-readiness
+  labels:
+    app: web
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "readiness-probe"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+        app.kubernetes.io/part-of: shrikeops-demo
+        shrikeops-demo/broken-sample: "readiness-probe"
+    spec:
+      automountServiceAccountToken: false
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Mi
+      containers:
+        - name: web
+          image: busybox:1.36
+          command: ["sh", "-c", "touch /tmp/healthy; sleep 3600"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            exec:
+              command: ["cat", "/tmp/ready"]
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
