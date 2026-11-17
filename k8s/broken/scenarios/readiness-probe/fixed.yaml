@@ -1,0 +1,61 @@
+# Fixed version of the readiness-probe sample: the probe checks the file the app writes.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: broken-readiness
+  labels:
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "readiness-probe"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: broken-readiness
+  labels:
+    app: web
+    app.kubernetes.io/part-of: shrikeops-demo
+    shrikeops-demo/broken-sample: "readiness-probe"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+        app.kubernetes.io/part-of: shrikeops-demo
+        shrikeops-demo/broken-sample: "readiness-probe"
+    spec:
+      automountServiceAccountToken: false
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Mi
+      containers:
+        - name: web
+          image: busybox:1.36
+          command: ["sh", "-c", "touch /tmp/healthy; sleep 3600"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            exec:
+              command: ["cat", "/tmp/healthy"]
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

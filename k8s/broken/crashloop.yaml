@@ -1,0 +1,42 @@
+# ⚠️  INTENTIONALLY BROKEN AT RUNTIME — for the evaluator quickstart
+# Symptom: pod goes to CrashLoopBackOff (container exits 1 on start).
+# Root cause: the app "cannot reach its database" and exits.
+# Ask your agent: "What is unhealthy in namespace demo? Propose a fix without changing anything."
+# Expected diagnosis: get_pod_logs shows "db connection refused"; restartCount keeps rising.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-api
+  namespace: demo
+  labels:
+    app: broken-api
+    app.kubernetes.io/part-of: shrikeops-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broken-api
+  template:
+    metadata:
+      labels:
+        app: broken-api
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: api
+          image: busybox:1.36
+          command: ["sh", "-c", "echo 'db connection refused'; exit 1"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
